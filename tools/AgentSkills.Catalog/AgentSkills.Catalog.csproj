@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>CognitiveForge.AgentSkills.Catalog</RootNamespace>
+    <AssemblyName>CognitiveForge.AgentSkills.Catalog</AssemblyName>
+    <PackageId>CognitiveForge.AgentSkills.Catalog</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Cognitive Forge</Authors>
+    <Company>Cognitive Forge</Company>
+    <Description>Catalog views, package manifests, path safety, and validation for Agent Skills plugin marketplaces.</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Cognitive-Forge-AI/agent-skills</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Cognitive-Forge-AI/agent-skills</RepositoryUrl>
+    <PackageTags>agent-skills;plugins;marketplace;claude-code;codex;cursor;copilot</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

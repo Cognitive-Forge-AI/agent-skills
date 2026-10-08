@@ -1,0 +1,8 @@
+{
+  "requiredLicense": "Apache-2.0",
+  "requiredAuthorName": "Cognitive Forge",
+  "requireCursorManifest": true,
+  "requireReferencedPackages": true,
+  "forbiddenUrlPrefixes": ["https://github.com/Cognitive-Forge-AI/"],
+  "allowedUrlPrefixes": ["https://github.com/Cognitive-Forge-AI/agent-skills"]
+}

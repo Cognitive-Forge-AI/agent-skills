@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+artifacts/
+TestResults/
+*.nupkg
+*.snupkg
+
+# Editors and local agent state
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.claude/settings.local.json
+.DS_Store
+Thumbs.db
+
+# Local secrets
+.env
+.env.*
+*.pem
+*.key
+*.pfx

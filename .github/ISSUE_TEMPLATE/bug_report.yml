@@ -1,0 +1,27 @@
+name: Bug report
+description: Report a reproducible plugin, packaging, or installation problem.
+body:
+  - type: markdown
+    attributes:
+      value: Use the private reporting route in SECURITY.md for vulnerabilities. Remove secrets and personal data from logs.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the expected behavior and the actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide commands or a minimal example.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and revision
+      description: Include OS, harness and version, marketplace commit, plugin name and version, and relevant redacted output.
+    validations:
+      required: true

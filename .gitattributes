@@ -1,0 +1,6 @@
+* text=auto eol=lf
+# Plugin packages are published byte-for-byte; release digests compare exact content.
+plugins/** -text
+*.png binary
+*.jpg binary
+*.ico binary

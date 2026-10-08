@@ -1,0 +1,12 @@
+{
+  "name": "agent-skills",
+  "owner": {
+    "name": "Cognitive Forge",
+    "email": "opensource@cognitiveforge.ai"
+  },
+  "metadata": {
+    "description": "An open marketplace for agent plugins and skills.",
+    "version": "0.1.0"
+  },
+  "plugins": []
+}
