@@ -1,0 +1,33 @@
+{
+  "name": "agent-writing",
+  "displayName": "Agent Writing",
+  "description": "Composable writing capabilities, profiles, and agent roles for drafting, revising, and reviewing prose.",
+  "version": "0.1.0-preview.1",
+  "author": {
+    "name": "Cognitive Forge",
+    "email": "opensource@cognitiveforge.ai"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "agent-writing",
+    "skills",
+    "writing",
+    "editing",
+    "agents"
+  ],
+  "category": "productivity",
+  "tags": [
+    "writing",
+    "editing",
+    "agent-workflow"
+  ],
+  "agents": [
+    "./agents/factual-reviewer.md",
+    "./agents/structural-editor.md",
+    "./agents/style-editor.md",
+    "./agents/writer.md"
+  ],
+  "skills": "./skills/",
+  "homepage": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/agent-writing",
+  "repository": "https://github.com/Cognitive-Forge-AI/agent-skills"
+}

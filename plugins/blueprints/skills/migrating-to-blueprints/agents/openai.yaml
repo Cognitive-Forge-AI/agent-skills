@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Migrate to Blueprints'
+  short_description: 'Convert project docs into Blueprints'
+  default_prompt: "Use $migrating-to-blueprints to migrate this project's existing docs, specs, ADRs, and design notes into Blueprints."

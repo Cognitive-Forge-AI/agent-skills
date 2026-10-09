@@ -1,0 +1,277 @@
+{
+  "version": "0.2.0-preview.1",
+  "modules": [
+    {
+      "id": "core",
+      "version": "0.2.0-preview.1",
+      "mode": "active",
+      "source": "core.md"
+    },
+    {
+      "id": "project-memory",
+      "version": "0.2.0-preview.1",
+      "mode": "active",
+      "source": "extensions/project-memory.md"
+    },
+    {
+      "id": "working-memory",
+      "version": "0.2.0-preview.1",
+      "mode": "active",
+      "source": "extensions/working-memory.md"
+    }
+  ],
+  "relationships": [
+    {
+      "from": [
+        "item"
+      ],
+      "to": [
+        "item"
+      ],
+      "label": "decomposes-into",
+      "reciprocal": "part-of",
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "SHOULD",
+      "use": "The source is intentionally decomposed into the target child.",
+      "module": "core",
+      "owner": "core",
+      "identity": "urn:blueprints:relationship:core:decomposes-into",
+      "version": "0.2.0-preview.1",
+      "source": "core.md"
+    },
+    {
+      "from": [
+        "item"
+      ],
+      "to": [
+        "item"
+      ],
+      "label": "part-of",
+      "reciprocal": "decomposes-into",
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "SHOULD",
+      "use": "The source is intentionally decomposed into the target child.",
+      "module": "core",
+      "owner": "core",
+      "identity": "urn:blueprints:relationship:core:part-of",
+      "version": "0.2.0-preview.1",
+      "source": "core.md",
+      "inverse": true
+    },
+    {
+      "from": [
+        "item"
+      ],
+      "to": [
+        "artifact"
+      ],
+      "label": "anchored-to",
+      "reciprocal": null,
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "none",
+      "use": "The source identifies a project artifact at an immutable revision.",
+      "module": "core",
+      "owner": "core",
+      "identity": "urn:blueprints:relationship:core:anchored-to",
+      "version": "0.2.0-preview.1",
+      "source": "core.md"
+    },
+    {
+      "from": [
+        "spec"
+      ],
+      "to": [
+        "spec"
+      ],
+      "label": "related-to",
+      "reciprocal": "related-to",
+      "level": "SHOULD",
+      "reason": "REQUIRED",
+      "reciprocalRule": "SHOULD",
+      "use": "Either Spec supplies useful direct context for understanding the other.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:related-to",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md"
+    },
+    {
+      "from": [
+        "spec"
+      ],
+      "to": [
+        "spec"
+      ],
+      "label": "related-to",
+      "reciprocal": "related-to",
+      "level": "SHOULD",
+      "reason": "REQUIRED",
+      "reciprocalRule": "SHOULD",
+      "use": "Either Spec supplies useful direct context for understanding the other.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:related-to",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md",
+      "inverse": true
+    },
+    {
+      "from": [
+        "spec"
+      ],
+      "to": [
+        "spec"
+      ],
+      "label": "depends-on",
+      "reciprocal": "required-by",
+      "level": "SHOULD",
+      "reason": "REQUIRED",
+      "reciprocalRule": "SHOULD",
+      "use": "The source requires a capability or contract defined by the target.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:depends-on",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md"
+    },
+    {
+      "from": [
+        "spec"
+      ],
+      "to": [
+        "spec"
+      ],
+      "label": "required-by",
+      "reciprocal": "depends-on",
+      "level": "SHOULD",
+      "reason": "REQUIRED",
+      "reciprocalRule": "SHOULD",
+      "use": "The source requires a capability or contract defined by the target.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:required-by",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md",
+      "inverse": true
+    },
+    {
+      "from": [
+        "decision"
+      ],
+      "to": [
+        "spec"
+      ],
+      "label": "affects",
+      "reciprocal": "affected-by",
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "SHOULD",
+      "use": "The choice changes what the Spec means or requires.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:affects",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md"
+    },
+    {
+      "from": [
+        "spec"
+      ],
+      "to": [
+        "decision"
+      ],
+      "label": "affected-by",
+      "reciprocal": "affects",
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "SHOULD",
+      "use": "The choice changes what the Spec means or requires.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:affected-by",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md",
+      "inverse": true
+    },
+    {
+      "from": [
+        "decision"
+      ],
+      "to": [
+        "decision"
+      ],
+      "label": "supersedes",
+      "reciprocal": "superseded-by",
+      "level": "MUST",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "MUST",
+      "use": "An accepted replacement replaces an earlier accepted choice.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:supersedes",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md"
+    },
+    {
+      "from": [
+        "decision"
+      ],
+      "to": [
+        "decision"
+      ],
+      "label": "superseded-by",
+      "reciprocal": "supersedes",
+      "level": "MUST",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "MUST",
+      "use": "An accepted replacement replaces an earlier accepted choice.",
+      "module": "project-memory",
+      "owner": "project-memory",
+      "identity": "urn:blueprints:relationship:project-memory:superseded-by",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/project-memory.md",
+      "inverse": true
+    },
+    {
+      "from": [
+        "exploration"
+      ],
+      "to": [
+        "spec"
+      ],
+      "label": "explores",
+      "reciprocal": null,
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "none",
+      "use": "The Exploration investigates possibilities relevant to realizing the Spec.",
+      "module": "working-memory",
+      "owner": "working-memory",
+      "identity": "urn:blueprints:relationship:working-memory:explores",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/working-memory.md"
+    },
+    {
+      "from": [
+        "exploration"
+      ],
+      "to": [
+        "decision"
+      ],
+      "label": "informs",
+      "reciprocal": null,
+      "level": "SHOULD",
+      "reason": "OPTIONAL",
+      "reciprocalRule": "none",
+      "use": "The Exploration contributes analysis to a draft or proposed Decision.",
+      "module": "working-memory",
+      "owner": "working-memory",
+      "identity": "urn:blueprints:relationship:working-memory:informs",
+      "version": "0.2.0-preview.1",
+      "source": "extensions/working-memory.md"
+    }
+  ]
+}

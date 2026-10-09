@@ -1,0 +1,3 @@
+interface:
+  display_name: "Build Writing Context"
+  short_description: "Collect supported writing facts and source references"

@@ -1,0 +1,20 @@
+{
+  "name": "agent-loop",
+  "version": "0.2.0-preview.1",
+  "description": "Reusable workflow skills for coding agents and chat assistants.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Cognitive Forge",
+    "email": "opensource@cognitiveforge.ai"
+  },
+  "homepage": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/agent-loop",
+  "repository": "https://github.com/Cognitive-Forge-AI/agent-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "agent-loop",
+    "skills",
+    "coding-agents",
+    "developer-workflow",
+    "git"
+  ]
+}

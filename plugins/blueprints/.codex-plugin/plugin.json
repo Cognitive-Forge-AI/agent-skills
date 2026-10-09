@@ -1,0 +1,31 @@
+{
+  "name": "blueprints",
+  "version": "0.2.0-preview.1",
+  "description": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Cognitive Forge",
+    "email": "opensource@cognitiveforge.ai"
+  },
+  "homepage": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/blueprints",
+  "repository": "https://github.com/Cognitive-Forge-AI/agent-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "blueprints",
+    "skills",
+    "project-memory",
+    "specs",
+    "decisions",
+    "working-memory",
+    "explorations",
+    "modular",
+    "retained-history"
+  ],
+  "interface": {
+    "displayName": "Blueprints",
+    "shortDescription": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
+    "developerName": "Cognitive Forge",
+    "category": "productivity",
+    "websiteURL": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/blueprints"
+  }
+}
