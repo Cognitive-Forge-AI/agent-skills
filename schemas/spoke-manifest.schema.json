@@ -165,7 +165,39 @@
           "default": true,
           "description": "When true, generate .claude-plugin/plugin.json for this plugin."
         }
-      }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "skillsPath"
+          ]
+        },
+        {
+          "required": [
+            "commands"
+          ]
+        },
+        {
+          "required": [
+            "agents"
+          ]
+        },
+        {
+          "required": [
+            "hooks"
+          ]
+        },
+        {
+          "required": [
+            "mcpServers"
+          ]
+        },
+        {
+          "required": [
+            "apps"
+          ]
+        }
+      ]
     },
     "person": {
       "type": "object",
@@ -192,7 +224,7 @@
       "type": "string",
       "minLength": 1,
       "not": {
-        "pattern": "^(?:[A-Za-z]:|/|\\\\|\\.\\.(?:/|\\\\|$))"
+        "pattern": "^(?:[A-Za-z]:|/|\\\\)|(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)"
       }
     },
     "pathOrPathArray": {

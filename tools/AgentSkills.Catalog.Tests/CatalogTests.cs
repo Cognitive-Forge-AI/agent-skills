@@ -210,6 +210,22 @@ public sealed class CatalogValidatorTests
         Assert.DoesNotContain(errors, error => error.Contains("skills/sample/SKILL.md"));
     }
 
+    [Theory]
+    [InlineData("../NOTICE")]
+    [InlineData("nested/NOTICE")]
+    [InlineData("..")]
+    public void Policy_file_names_cannot_reach_outside_the_package_root(string fileName)
+    {
+        using var fixture = new MarketplaceFixture();
+        fixture.AddPackage("sample");
+        fixture.Save();
+        // A file the entry would reach must not satisfy the requirement.
+        MarketplaceFixture.Write(Path.Combine(fixture.Root, "plugins", "NOTICE"), "outside");
+        MarketplaceFixture.Write(Path.Combine(fixture.Package("sample"), "nested", "NOTICE"), "nested");
+        var policy = MarketplaceFixture.PublicPolicy with { RequiredPackageFiles = [fileName] };
+        Assert.Contains(CatalogValidator.Validate(fixture.Root, policy), error => error.Contains("must be file names at the package root"));
+    }
+
     [Fact]
     public void Url_scan_skips_excluded_paths()
     {
@@ -241,6 +257,10 @@ public sealed class CatalogValidatorTests
     [Theory]
     [InlineData("---\nname: a\nlicense: Apache-2.0\n---\nbody", "Apache-2.0")]
     [InlineData("---\r\nlicense: 'MIT'\r\n---\r\nbody", "MIT")]
+    [InlineData("---\nlicense: Apache-2.0 # license identifier\n---\nbody", "Apache-2.0")]
+    [InlineData("---\nlicense: Apache-2.0\t# tab comment\n---\nbody", "Apache-2.0")]
+    [InlineData("---\nlicense: \"MIT # not a comment\" # comment\n---\nbody", "MIT # not a comment")]
+    [InlineData("---\nlicense: LicenseRef-a#b\n---\nbody", "LicenseRef-a#b")]
     [InlineData("---\nmetadata:\n  license: nested\n---\nbody", null)]
     [InlineData("no frontmatter\nlicense: Apache-2.0", null)]
     public void Frontmatter_values_are_read_from_top_level_keys(string markdown, string? expected) =>
