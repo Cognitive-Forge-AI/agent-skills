@@ -7,7 +7,7 @@
     <RootNamespace>CognitiveForge.AgentSkills.Catalog</RootNamespace>
     <AssemblyName>CognitiveForge.AgentSkills.Catalog</AssemblyName>
     <PackageId>CognitiveForge.AgentSkills.Catalog</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Cognitive Forge</Authors>
     <Company>Cognitive Forge</Company>
     <Description>Catalog views, package manifests, path safety, and validation for Agent Skills plugin marketplaces.</Description>

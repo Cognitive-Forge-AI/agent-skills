@@ -195,6 +195,78 @@ public sealed class CatalogValidatorTests
     }
 
     [Fact]
+    public void Notice_and_skill_license_policy_are_enforced()
+    {
+        using var fixture = new MarketplaceFixture();
+        fixture.AddPackage("sample");
+        fixture.Save();
+        File.Delete(Path.Combine(fixture.Package("sample"), "NOTICE"));
+        MarketplaceFixture.Write(Path.Combine(fixture.Package("sample"), "skills", "unlicensed", "SKILL.md"), "---\nname: unlicensed\ndescription: No license\n---\nBody.");
+        MarketplaceFixture.Write(Path.Combine(fixture.Package("sample"), "skills", "other", "SKILL.md"), "---\nname: other\nlicense: \"MIT\"\n---\nBody.");
+        var errors = CatalogValidator.Validate(fixture.Root, MarketplaceFixture.PublicPolicy);
+        Assert.Contains(errors, error => error.Contains("must include NOTICE at its root"));
+        Assert.Contains(errors, error => error.Contains("skills/unlicensed/SKILL.md must declare license in its frontmatter"));
+        Assert.Contains(errors, error => error.Contains("skills/other/SKILL.md must declare license Apache-2.0, not MIT"));
+        Assert.DoesNotContain(errors, error => error.Contains("skills/sample/SKILL.md"));
+    }
+
+    [Theory]
+    [InlineData("../NOTICE")]
+    [InlineData("nested/NOTICE")]
+    [InlineData("..")]
+    public void Policy_file_names_cannot_reach_outside_the_package_root(string fileName)
+    {
+        using var fixture = new MarketplaceFixture();
+        fixture.AddPackage("sample");
+        fixture.Save();
+        // A file the entry would reach must not satisfy the requirement.
+        MarketplaceFixture.Write(Path.Combine(fixture.Root, "plugins", "NOTICE"), "outside");
+        MarketplaceFixture.Write(Path.Combine(fixture.Package("sample"), "nested", "NOTICE"), "nested");
+        var policy = MarketplaceFixture.PublicPolicy with { RequiredPackageFiles = [fileName] };
+        Assert.Contains(CatalogValidator.Validate(fixture.Root, policy), error => error.Contains("must be file names at the package root"));
+    }
+
+    [Fact]
+    public void Url_scan_skips_excluded_paths()
+    {
+        using var fixture = new MarketplaceFixture();
+        fixture.AddPackage("sample");
+        fixture.Save();
+        MarketplaceFixture.Write(Path.Combine(fixture.Package("sample"), "manifest.json"), "{\"homepage\":\"https://github.com/Cognitive-Forge-AI/private-spoke\"}");
+        Assert.Empty(CatalogValidator.Validate(fixture.Root, MarketplaceFixture.PublicPolicy));
+        MarketplaceFixture.Write(Path.Combine(fixture.Package("sample"), "notes.md"), "https://github.com/Cognitive-Forge-AI/private-spoke");
+        Assert.Contains(CatalogValidator.Validate(fixture.Root, MarketplaceFixture.PublicPolicy), error => error.Contains("notes.md:1"));
+    }
+
+    [Fact]
+    public void Package_without_components_is_rejected()
+    {
+        using var fixture = new MarketplaceFixture();
+        fixture.AddPackage("sample");
+        fixture.Save();
+        foreach (var manifestPath in PackageManifests.All)
+        {
+            var path = Path.Combine(fixture.Package("sample"), manifestPath);
+            var manifest = CatalogJson.ReadObject(path);
+            manifest.Remove("skills");
+            CatalogJson.Write(path, manifest);
+        }
+        Assert.Contains(CatalogValidator.Validate(fixture.Root), error => error.Contains("declares no components"));
+    }
+
+    [Theory]
+    [InlineData("---\nname: a\nlicense: Apache-2.0\n---\nbody", "Apache-2.0")]
+    [InlineData("---\r\nlicense: 'MIT'\r\n---\r\nbody", "MIT")]
+    [InlineData("---\nlicense: Apache-2.0 # license identifier\n---\nbody", "Apache-2.0")]
+    [InlineData("---\nlicense: Apache-2.0\t# tab comment\n---\nbody", "Apache-2.0")]
+    [InlineData("---\nlicense: \"MIT # not a comment\" # comment\n---\nbody", "MIT # not a comment")]
+    [InlineData("---\nlicense: LicenseRef-a#b\n---\nbody", "LicenseRef-a#b")]
+    [InlineData("---\nmetadata:\n  license: nested\n---\nbody", null)]
+    [InlineData("no frontmatter\nlicense: Apache-2.0", null)]
+    public void Frontmatter_values_are_read_from_top_level_keys(string markdown, string? expected) =>
+        Assert.Equal(expected, CatalogValidator.FrontmatterValue(markdown, "license"));
+
+    [Fact]
     public void Linked_package_content_is_rejected()
     {
         using var fixture = new MarketplaceFixture();

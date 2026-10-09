@@ -8,7 +8,7 @@ Thank you for helping improve Agent Skills. Bug reports, documentation fixes, va
 | --- | --- |
 | Plugin content in `plugins/` | [Open an issue](https://github.com/Cognitive-Forge-AI/agent-skills/issues/new/choose) describing the problem or improvement. Maintainers apply accepted changes upstream and publish them in a new plugin version through a release PR. Direct edits to `plugins/` are not merged: the next release would replace them, and a published version must never change content. |
 | Documentation, `tools/`, workflows, templates | Open a focused pull request. |
-| New plugins | Open a plugin proposal issue with its purpose, source, license, supported harnesses, and any scripts, hooks, MCP servers, or external services. |
+| New plugins | Open a plugin proposal issue with its purpose, source, license, supported harnesses, and any scripts, hooks, MCP servers, or external services. Plugins follow the [plugin standard](docs/plugin-standard.md). |
 | Removing a plugin | Maintainers remove the package and catalog entry directly, then regenerate the views. |
 
 ## Local checks

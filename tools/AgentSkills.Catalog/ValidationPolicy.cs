@@ -15,6 +15,15 @@ public sealed record ValidationPolicy
 
     public IReadOnlyList<string> LicenseFiles { get; init; } = ["LICENSE", "LICENSE.md", "LICENSE.txt"];
 
+    /// <summary>Files every package must contain at its root, such as <c>NOTICE</c>.</summary>
+    public IReadOnlyList<string> RequiredPackageFiles { get; init; } = [];
+
+    /// <summary>
+    /// Every <c>SKILL.md</c> must declare a <c>license</c> in its frontmatter (matching <see cref="RequiredLicense"/> when set),
+    /// so the license travels with skills that are copied individually.
+    /// </summary>
+    public bool RequireSkillLicense { get; init; }
+
     public bool RequireCursorManifest { get; init; } = true;
 
     /// <summary>Every directory under <c>plugins/</c> must be a catalog package.</summary>
@@ -25,6 +34,9 @@ public sealed record ValidationPolicy
 
     /// <summary>Exceptions to <see cref="ForbiddenUrlPrefixes"/>, matched as a whole path prefix.</summary>
     public IReadOnlyList<string> AllowedUrlPrefixes { get; init; } = [];
+
+    /// <summary>Package-relative paths skipped by the URL scan, such as metadata a publishing step rewrites.</summary>
+    public IReadOnlyList<string> UrlScanExcludedPaths { get; init; } = [];
 
     private static readonly JsonSerializerOptions Options = new()
     {
