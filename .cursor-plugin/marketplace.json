@@ -6,7 +6,18 @@
   },
   "metadata": {
     "description": "An open marketplace for agent plugins and skills.",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "agent-loop",
+      "source": "plugins/agent-loop",
+      "description": "Reusable workflow skills for coding agents and chat assistants."
+    },
+    {
+      "name": "blueprints",
+      "source": "plugins/blueprints",
+      "description": "Skills for adopting, following, authoring, and maintaining Blueprints project memory."
+    }
+  ]
 }

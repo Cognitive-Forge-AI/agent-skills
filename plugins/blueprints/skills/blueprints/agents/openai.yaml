@@ -1,0 +1,6 @@
+interface:
+  display_name: "Blueprints"
+  short_description: "Keep repository work aligned with Blueprints"
+  default_prompt: "Use $blueprints to perform this repository task while maintaining its .blueprints project memory."
+policy:
+  allow_implicit_invocation: true

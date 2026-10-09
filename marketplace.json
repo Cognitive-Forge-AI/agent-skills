@@ -2,10 +2,82 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "agent-skills",
   "description": "An open marketplace for agent plugins and skills.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "owner": {
     "name": "Cognitive Forge",
     "email": "opensource@cognitiveforge.ai"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "agent-loop",
+      "description": "Reusable workflow skills for coding agents and chat assistants.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Cognitive Forge",
+        "email": "opensource@cognitiveforge.ai"
+      },
+      "homepage": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/agent-loop",
+      "repository": "https://github.com/Cognitive-Forge-AI/agent-skills",
+      "license": "Apache-2.0",
+      "keywords": [
+        "agent-loop",
+        "skills",
+        "coding-agents",
+        "developer-workflow",
+        "git"
+      ],
+      "category": "productivity",
+      "tags": [
+        "agent-workflow",
+        "coding-agents",
+        "git",
+        "commit-messages"
+      ],
+      "source": "./plugins/agent-loop",
+      "strict": true,
+      "skills": [
+        "./skills/"
+      ]
+    },
+    {
+      "name": "blueprints",
+      "description": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
+      "version": "0.2.0-preview.1",
+      "author": {
+        "name": "Cognitive Forge",
+        "email": "opensource@cognitiveforge.ai"
+      },
+      "homepage": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/blueprints",
+      "repository": "https://github.com/Cognitive-Forge-AI/agent-skills",
+      "license": "Apache-2.0",
+      "keywords": [
+        "blueprints",
+        "skills",
+        "project-memory",
+        "specs",
+        "decisions",
+        "working-memory",
+        "explorations",
+        "modular",
+        "retained-history"
+      ],
+      "category": "productivity",
+      "tags": [
+        "blueprints",
+        "agent-workflow",
+        "migration",
+        "upgrade",
+        "project-memory",
+        "specs",
+        "decisions",
+        "working-memory",
+        "explorations"
+      ],
+      "source": "./plugins/blueprints",
+      "strict": true,
+      "skills": [
+        "./skills/"
+      ]
+    }
+  ]
 }
