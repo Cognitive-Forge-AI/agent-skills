@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Cognitive-Forge-AI/agent-skills/main/schemas/spoke-manifest.schema.json",
+  "title": "Cognitive Forge Spoke Manifest",
+  "description": "Source manifest of a Cognitive Forge plugin repository (spoke): the single plugin it publishes through the registry, or an empty retirement submission. See docs/plugin-standard.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "plugins"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional schema reference for editor validation."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Spoke display identifier. Folder ownership is derived from the validated repository name."
+    },
+    "description": {
+      "type": "string",
+      "description": "Default description inherited by plugins; does not replace hub identity."
+    },
+    "version": {
+      "$ref": "#/$defs/semver",
+      "description": "Legacy source metadata accepted for compatibility and ignored by hub versioning.",
+      "deprecated": true
+    },
+    "owner": {
+      "$ref": "#/$defs/person",
+      "description": "Ignored: the registry applies Cognitive Forge authorship and the Apache-2.0 license to every plugin.",
+      "deprecated": true
+    },
+    "author": {
+      "$ref": "#/$defs/person",
+      "description": "Ignored: the registry applies Cognitive Forge authorship and the Apache-2.0 license to every plugin.",
+      "deprecated": true
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri",
+      "description": "Default homepage inherited by plugins unless overridden."
+    },
+    "repository": {
+      "type": "string",
+      "description": "Default source repository inherited by plugins unless overridden."
+    },
+    "license": {
+      "type": "string",
+      "description": "Ignored: the registry applies Cognitive Forge authorship and the Apache-2.0 license to every plugin.",
+      "deprecated": true
+    },
+    "keywords": {
+      "$ref": "#/$defs/stringArray",
+      "description": "Default discovery keywords inherited by plugins unless overridden."
+    },
+    "capabilityRoot": {
+      "type": "string",
+      "description": "Optional documentation-only hint for the capability root. The hub workflow passes the actual root to the compiler."
+    },
+    "plugins": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/plugin"
+      },
+      "description": "One independently versioned plugin per spoke. An empty array retires the spoke's plugin."
+    }
+  },
+  "$defs": {
+    "plugin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "Stable kebab-case plugin identifier."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Human-readable plugin name for install surfaces."
+        },
+        "description": {
+          "type": "string",
+          "description": "Plugin-specific public description."
+        },
+        "version": {
+          "$ref": "#/$defs/semver",
+          "description": "Authoritative plugin version copied into generated manifests. Use a prerelease suffix such as 0.1.0-preview.1 for previews; a published version never changes content."
+        },
+        "skillsPath": {
+          "$ref": "#/$defs/relativePath",
+          "description": "Optional directory, relative to the capability root, copied recursively into the plugin's skills/ folder. A plugin must declare at least one component: skills, commands, agents, hooks, MCP servers, or apps."
+        },
+        "author": {
+          "$ref": "#/$defs/person",
+          "description": "Ignored: the registry applies Cognitive Forge authorship and the Apache-2.0 license to every plugin.",
+          "deprecated": true
+        },
+        "homepage": {
+          "type": "string",
+          "format": "uri",
+          "description": "Plugin-specific homepage override."
+        },
+        "repository": {
+          "type": "string",
+          "description": "Plugin-specific repository override."
+        },
+        "license": {
+          "type": "string",
+          "description": "Ignored: the registry applies Cognitive Forge authorship and the Apache-2.0 license to every plugin.",
+          "deprecated": true
+        },
+        "keywords": {
+          "$ref": "#/$defs/stringArray",
+          "description": "Plugin-specific keyword override."
+        },
+        "category": {
+          "type": "string",
+          "description": "Install-surface category."
+        },
+        "tags": {
+          "$ref": "#/$defs/stringArray",
+          "description": "Additional marketplace tags."
+        },
+        "interface": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Codex install-surface metadata. Values are copied into .codex-plugin/plugin.json interface."
+        },
+        "commands": {
+          "$ref": "#/$defs/pathOrPathArray",
+          "description": "Command file or directory paths copied into the generated plugin and referenced from the plugin manifest."
+        },
+        "agents": {
+          "$ref": "#/$defs/pathOrPathArray",
+          "description": "Agent file or directory paths copied into the generated plugin and referenced from the plugin manifest."
+        },
+        "hooks": {
+          "$ref": "#/$defs/relativePath",
+          "description": "Hook config path copied into the generated plugin."
+        },
+        "mcpServers": {
+          "$ref": "#/$defs/relativePath",
+          "description": "MCP config path copied into the generated plugin."
+        },
+        "apps": {
+          "$ref": "#/$defs/relativePath",
+          "description": "Codex app/connector mapping path copied into the generated plugin."
+        },
+        "assets": {
+          "$ref": "#/$defs/pathOrPathArray",
+          "description": "Asset file or directory paths copied into the generated plugin. LICENSE and NOTICE are added by the registry and need not be declared."
+        },
+        "strict": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true, generate .claude-plugin/plugin.json for this plugin."
+        }
+      }
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "pattern": "^(?:[A-Za-z]:|/|\\\\|\\.\\.(?:/|\\\\|$))"
+      }
+    },
+    "pathOrPathArray": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/relativePath"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/relativePath"
+          }
+        }
+      ]
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

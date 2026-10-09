@@ -120,6 +120,7 @@ public static partial class CatalogValidator
         var files = SafePaths.EnumerateFiles(package).ToList();
 
         var strict = entry["strict"] is not JsonValue strictValue || !strictValue.TryGetValue<bool>(out var isStrict) || isStrict;
+        var declaresComponent = false;
         foreach (var manifestPath in PackageManifests.All)
         {
             var required = manifestPath switch
@@ -142,6 +143,7 @@ public static partial class CatalogValidator
             {
                 foreach (var reference in CatalogJson.StringValues(manifest[key]))
                 {
+                    declaresComponent = true;
                     if (reference.Contains('*') || reference.Contains("://", StringComparison.Ordinal)) continue;
                     var resolved = SafePaths.Resolve(package, reference, $"Plugin {name} {manifestPath} {key}");
                     if (!File.Exists(resolved) && !Directory.Exists(resolved))
@@ -150,11 +152,51 @@ public static partial class CatalogValidator
             }
         }
 
+        if (!declaresComponent)
+            errors.Add($"Plugin {name} declares no components; add skills, agents, commands, hooks, MCP servers, or apps.");
+
         if (policy.RequiredLicense is not null && !policy.LicenseFiles.Any(file => File.Exists(Path.Combine(package, file))))
             errors.Add($"Plugin {name} must include a license file ({string.Join(", ", policy.LicenseFiles)}).");
+        foreach (var required in policy.RequiredPackageFiles)
+            if (!File.Exists(Path.Combine(package, required)))
+                errors.Add($"Plugin {name} must include {required} at its root.");
+
+        if (policy.RequireSkillLicense)
+        {
+            foreach (var skill in files.Where(file => Path.GetFileName(file) == "SKILL.md"))
+            {
+                var license = FrontmatterValue(File.ReadAllText(skill), "license");
+                var location = SafePaths.ToPortableRelative(package, skill);
+                if (string.IsNullOrWhiteSpace(license))
+                    errors.Add($"Plugin {name} {location} must declare license in its frontmatter.");
+                else if (policy.RequiredLicense is not null && license != policy.RequiredLicense)
+                    errors.Add($"Plugin {name} {location} must declare license {policy.RequiredLicense}, not {license}.");
+            }
+        }
 
         if (policy.ForbiddenUrlPrefixes.Count > 0)
-            foreach (var file in files) ScanUrls(package, file, name, policy, errors);
+        {
+            var excluded = new HashSet<string>(policy.UrlScanExcludedPaths, StringComparer.Ordinal);
+            foreach (var file in files.Where(file => !excluded.Contains(SafePaths.ToPortableRelative(package, file))))
+                ScanUrls(package, file, name, policy, errors);
+        }
+    }
+
+    /// <summary>Returns a top-level scalar from a Markdown file's YAML frontmatter, or null.</summary>
+    public static string? FrontmatterValue(string markdown, string key)
+    {
+        var text = markdown.ReplaceLineEndings("\n");
+        if (!text.StartsWith("---\n", StringComparison.Ordinal)) return null;
+        var end = text.IndexOf("\n---", 4, StringComparison.Ordinal);
+        if (end < 0) return null;
+        foreach (var line in text[4..end].Split('\n'))
+        {
+            if (!line.StartsWith(key + ":", StringComparison.Ordinal)) continue;
+            var value = line[(key.Length + 1)..].Trim();
+            if (value.Length >= 2 && (value[0] is '"' or '\'') && value[^1] == value[0]) value = value[1..^1];
+            return value;
+        }
+        return null;
     }
 
     private static void CheckMetadata(JsonObject json, string description, ValidationPolicy policy, List<string> errors)
