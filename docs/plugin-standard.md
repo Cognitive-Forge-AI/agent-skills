@@ -15,6 +15,7 @@ plugins/<plugin-name>/
 ├── .cursor-plugin/plugin.json   # Cursor
 ├── LICENSE                      # Apache-2.0 text
 ├── NOTICE                       # Copyright and attribution
+├── README.md                    # For people installing the plugin
 ├── skills/<skill-name>/SKILL.md # Optional components below
 ├── agents/
 ├── commands/
@@ -77,7 +78,8 @@ A Cognitive Forge spoke publishes exactly one plugin through the private registr
       "description": "<One-sentence description>",
       "version": "0.1.0-preview.1",
       "category": "productivity",
-      "skillsPath": "skills"
+      "skillsPath": "skills",
+      "readme": "plugin-readme.md"
     }
   ]
 }
@@ -87,3 +89,13 @@ A Cognitive Forge spoke publishes exactly one plugin through the private registr
 - Component paths are relative to the capability root and copied with their relative paths.
 - The spoke repository root also carries `LICENSE` and `NOTICE` for the repository itself.
 - Shared workflows from the registry notify it of changes and validate pull requests against this standard.
+
+### 6.1 Plugin README
+
+The plugin's `readme` property names a Markdown file, relative to the capability root and ending in `.md`. The registry compiler publishes it as `README.md` at the package root.
+
+- The README is written for people installing and using the plugin: what it does, which harnesses it supports, how to install it, and how to use its components. Guidance for authors and maintainers belongs in the spoke repository, not here. A capability root's own `README.md` usually describes the source, so the plugin README is often a separate file, such as `plugin-readme.md`.
+- `readme` is optional in the schema, but a plugin MUST declare it before it is released publicly.
+- The README MUST NOT reference a non-public Cognitive Forge repository in any form. This covers `https://github.com/Cognitive-Forge-AI/<repo>` URLs, `raw.githubusercontent.com` URLs, SSH remotes such as `git@github.com:Cognitive-Forge-AI/<repo>.git`, `Cognitive-Forge-AI/<repo>` shorthand, and GitHub Pages URLs such as `https://cognitive-forge-ai.github.io/<repo>`, whether or not the reference is a link.
+- Relative links MUST resolve to a file inside the published package. They are resolved from `README.md` at the package root, not from the source file's location in the spoke.
+- Every other link MUST use the `http`, `https`, or `mailto` scheme.
