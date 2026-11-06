@@ -160,6 +160,17 @@
           "$ref": "#/$defs/pathOrPathArray",
           "description": "Asset file or directory paths copied into the generated plugin. LICENSE and NOTICE are added by the registry and need not be declared."
         },
+        "readme": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "pattern": "\\.md$"
+            }
+          ],
+          "description": "Optional Markdown file, relative to the capability root, that the registry compiler publishes as README.md at the package root. Written for people installing the plugin, not for authors. Required for public release; see docs/plugin-standard.md for its link rules."
+        },
         "strict": {
           "type": "boolean",
           "default": true,
