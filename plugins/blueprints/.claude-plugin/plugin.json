@@ -1,6 +1,6 @@
 {
   "name": "blueprints",
-  "version": "0.2.0-preview.1",
+  "version": "0.2.0-preview.3",
   "description": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
   "skills": "./skills/",
   "author": {

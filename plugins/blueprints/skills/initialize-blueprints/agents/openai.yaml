@@ -1,0 +1,6 @@
+interface:
+  display_name: 'Initialize Blueprints'
+  short_description: 'Set up Blueprints project memory in a repository'
+  default_prompt: 'Use $initialize-blueprints to set up Blueprints project memory in this repository.'
+policy:
+  allow_implicit_invocation: true

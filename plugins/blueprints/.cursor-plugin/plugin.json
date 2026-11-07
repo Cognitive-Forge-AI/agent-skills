@@ -2,7 +2,7 @@
   "name": "blueprints",
   "displayName": "Blueprints",
   "description": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
-  "version": "0.2.0-preview.1",
+  "version": "0.2.0-preview.3",
   "author": {
     "name": "Cognitive Forge",
     "email": "opensource@cognitiveforge.ai"

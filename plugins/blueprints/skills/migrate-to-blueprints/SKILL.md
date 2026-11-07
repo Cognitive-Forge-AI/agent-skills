@@ -1,5 +1,5 @@
 ---
-name: migrating-to-blueprints
+name: migrate-to-blueprints
 description: >
     Use when the user asks to convert existing project documents, specifications, ADRs, design notes, issues, or historical material into Blueprints project memory.
 disable-model-invocation: true
@@ -10,11 +10,11 @@ license: Apache-2.0
 
 # Migrating to Blueprints
 
-Import durable intent and reasoning from other documentation. For an existing Blueprint store changing framework versions, use `upgrading-blueprints` instead.
+Import durable intent and reasoning from other documentation. For an existing Blueprint store changing framework versions, use `upgrade-blueprints` instead.
 
 ## Inspect and classify
 
-Read [Core](../blueprints/references/blueprints/core.md), the [Markdown binding](../blueprints/references/blueprints/markdown-based-implementation.md), and [Project Memory](../blueprints/references/blueprints/extensions/project-memory.md), plus [Working Memory](../blueprints/references/blueprints/extensions/working-memory.md) when the project selects it. Use the everyday skill's [bounded discovery](../blueprints/references/discovery.md) and trust boundary.
+Read [Core](../use-blueprints/references/blueprints/core.md), the [Markdown binding](../use-blueprints/references/blueprints/markdown-based-implementation.md), and [Project Memory](../use-blueprints/references/blueprints/extensions/project-memory.md), plus [Working Memory](../use-blueprints/references/blueprints/extensions/working-memory.md) when the project selects it. Use the everyday skill's [bounded discovery](../use-blueprints/references/discovery.md) and trust boundary.
 
 Inventory candidate documents with targeted file searches. Read project entry points, relevant sources, and change history where authority is unclear. Preserve originals. Record a short working inventory of source, owned meaning, authority, target feature, and unresolved questions outside the Blueprint item bodies.
 
