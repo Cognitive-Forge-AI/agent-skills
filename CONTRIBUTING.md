@@ -33,4 +33,9 @@ By contributing, you confirm that you can distribute your contribution under Apa
 
 ## Releasing the catalog library
 
-Maintainers publish `CognitiveForge.AgentSkills.Catalog` to nuget.org by pushing a `catalog-v<version>` tag that matches `<Version>` in `tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj`. The workflow uses nuget.org trusted publishing.
+Maintainers publish `CognitiveForge.AgentSkills.Catalog` to nuget.org with trusted publishing:
+
+1. In a pull request, bump `<Version>` in `tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj` and add the changes to [`CHANGELOG.md`](tools/AgentSkills.Catalog/CHANGELOG.md).
+2. After it merges, run the **Publish Catalog Package** workflow on `main`. It creates the `catalog-v<version>` tag, then publishes the package. Pushing that tag yourself starts the same flow.
+
+The run fails if the commit is not on `main`, or if the version was not bumped or is already published. Its job summary reports each step and what to do next. If it fails after creating the tag, use **Re-run failed jobs** so it stays on the same commit.
