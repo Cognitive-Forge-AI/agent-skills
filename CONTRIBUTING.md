@@ -23,7 +23,7 @@ git diff --check
 
 After editing `marketplace.json`, regenerate the harness views with `dotnet run --project tools/AgentSkills.Cli -- views` and commit them together with the catalog.
 
-Validation rejects links in package paths and unsafe or missing component paths. It also rejects manifests that disagree with the catalog, out-of-date views, and packages without an Apache-2.0 license file. Links to non-public Cognitive Forge repositories are rejected too. Use physical paths: links in any path component are rejected, including linked parent directories.
+Validation rejects links in package paths and unsafe or missing component paths. It also rejects manifests that disagree with the catalog, out-of-date views, and packages without an Apache-2.0 license file, `README.md`, or `SECURITY.md`. Links to non-public Cognitive Forge repositories are rejected too. Use physical paths: links in any path component are rejected, including linked parent directories.
 
 ## Pull requests
 

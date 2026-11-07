@@ -104,7 +104,7 @@ dotnet run --project tools/AgentSkills.Cli -- views     # regenerate harness cat
 dotnet test tools/AgentSkills.Catalog.Tests
 ```
 
-`marketplace.json` is authoritative. `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json`, and `.cursor-plugin/marketplace.json` are generated from it. GitHub Copilot reads the root catalog. [`catalog-policy.json`](catalog-policy.json) adds this marketplace's rules. Packages must be Apache-2.0, with `LICENSE` and `NOTICE` files and a `license` in every skill. They must name Cognitive Forge as author, and must not link to non-public Cognitive Forge repositories. The [plugin standard](docs/plugin-standard.md) describes the full package format. [`schemas/spoke-manifest.schema.json`](schemas/spoke-manifest.schema.json) describes the source manifest of a Cognitive Forge plugin repository.
+`marketplace.json` is authoritative. `.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json`, and `.cursor-plugin/marketplace.json` are generated from it. GitHub Copilot reads the root catalog. [`catalog-policy.json`](catalog-policy.json) adds this marketplace's rules. Packages must be Apache-2.0, with `LICENSE`, `NOTICE`, `README.md`, and `SECURITY.md` files. They must name Cognitive Forge as author, and must not link to non-public Cognitive Forge repositories. The [plugin standard](docs/plugin-standard.md) describes the full package format. [`schemas/spoke-manifest.schema.json`](schemas/spoke-manifest.schema.json) describes the source manifest of a Cognitive Forge plugin repository.
 
 ## License
 
