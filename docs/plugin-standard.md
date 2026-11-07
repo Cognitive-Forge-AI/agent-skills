@@ -15,7 +15,7 @@ plugins/<plugin-name>/
 ├── .cursor-plugin/plugin.json   # Cursor
 ├── LICENSE                      # Apache-2.0 text
 ├── NOTICE                       # Copyright and attribution
-├── SECURITY.md                  # Security policy, added at release
+├── SECURITY.md                  # Security policy
 ├── README.md                    # For people installing the plugin
 ├── CHANGELOG.md                 # Optional release notes
 ├── skills/<skill-name>/SKILL.md # Optional components below
@@ -50,8 +50,7 @@ license: Apache-2.0
 ## 3. Licensing and notices
 
 - Plugins are licensed under Apache-2.0. Every catalog entry and plugin manifest MUST declare `"license": "Apache-2.0"`.
-- Every plugin MUST contain `LICENSE` and `NOTICE` at its root. `NOTICE` names the plugin and states `Copyright <year> Cognitive Forge Inc.`; Apache-2.0 §4(d) requires redistributors to keep it.
-- Every plugin MUST contain `SECURITY.md` at its root. The registry writes the [marketplace's root file](../SECURITY.md) into the package at each release, so a change to it reaches a plugin with that plugin's next version. Spokes MUST NOT declare it.
+- Every plugin MUST contain `LICENSE`, `NOTICE`, `README.md`, and `SECURITY.md` at its root. `NOTICE` names the plugin and states `Copyright <year> Cognitive Forge Inc.`; Apache-2.0 §4(d) requires redistributors to keep it.
 - Third-party material MUST keep its own license and attribution, and be identified in `NOTICE`.
 
 ## 4. Metadata
@@ -93,30 +92,14 @@ A Cognitive Forge spoke publishes exactly one plugin through the private registr
 ```
 
 - `schemaVersion` is required and MUST be `2`.
-- The registry generates the three plugin manifests, applies Cognitive Forge authorship and the Apache-2.0 license, and adds `LICENSE`, `NOTICE`, and `SECURITY.md` to the package. Spokes do not declare `author`, `owner`, or `license`.
+- The registry generates the three plugin manifests and applies Cognitive Forge authorship and the Apache-2.0 license. Spokes do not declare `author`, `owner`, or `license`.
 - Component paths are relative to the capability root and copied with their relative paths.
 - The spoke repository root also carries `LICENSE` and `NOTICE` for the repository itself.
 - Shared workflows from the registry notify it of changes and validate pull requests against this standard.
 
 ### 6.1 Package assets
 
-`assets` is an array of objects that allows declaring extra package files:
-
-- `source` is required. It names a file or directory, relative to the capability root.
-- `destination` is optional and defaults to `source`. It is a path relative to the package root.
-
-The registry owns these rules, and a spoke cannot opt out of them. They apply to normalized paths and to every destination, including one that defaults to `source`. Two paths overlap when they are the same path or one is beneath the other, compared case-insensitively.
-
-- `source` and `destination` MUST NOT contain a `..` segment.
-- A destination MUST NOT be the package root.
-- A destination MUST NOT overlap another asset's destination.
-- A destination MUST NOT overlap a reserved path:
-  - `LICENSE`, `NOTICE`, `SECURITY.md`, `manifest.json`
-  - `.claude-plugin`, `.codex-plugin`, `.cursor-plugin`
-  - `skills`, `commands`, `agents`, `hooks`, `rules`
-  - `.mcp.json`, `.app.json`
-  - any component path the plugin declares
-- A destination ending in `.md` MUST have a source file ending in `.md`.
+`assets` declares extra files for the package. `source` names a file or directory relative to the capability root. `destination` is a path relative to the package root, and defaults to `source`. The schema checks the shape of each entry. The registry decides which destinations it accepts when it compiles a plugin, and reports any it rejects. The resulting package must still meet this standard.
 
 ### 6.2 Plugin README
 
@@ -126,8 +109,7 @@ The plugin README is an `assets` entry with the destination `README.md`. Its sou
 { "source": "plugin-readme.md", "destination": "README.md" }
 ```
 
-- The README is written for people installing and using the plugin: what it does, which harnesses it supports, how to install it, and how to use its components. Guidance for authors and maintainers belongs in the spoke repository, not here. A capability root's own `README.md` usually describes the source, so the plugin README is often a separate file, such as `plugin-readme.md`.
-- The entry is optional in the schema, but a plugin MUST include `README.md` before it is released publicly.
+The README is written for people installing and using the plugin: what it does, which harnesses it supports, how to install it, and how to use its components. Guidance for authors and maintainers belongs in the spoke repository, not here. A capability root's own `README.md` usually describes the source, so the plugin README is often a separate file, such as `plugin-readme.md`.
 
 ### 6.3 Changelog
 

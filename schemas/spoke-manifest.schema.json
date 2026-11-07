@@ -82,7 +82,8 @@
       "additionalProperties": false,
       "required": [
         "name",
-        "version"
+        "version",
+        "assets"
       ],
       "properties": {
         "name": {
@@ -168,7 +169,7 @@
           "items": {
             "$ref": "#/$defs/asset"
           },
-          "description": "Extra files or directories copied into the generated plugin. A destination must not overlap another destination or a reserved path. Two paths overlap when they are the same path or one is beneath the other, compared case-insensitively. Reserved paths: LICENSE, NOTICE, SECURITY.md, manifest.json, .claude-plugin, .codex-plugin, .cursor-plugin, skills, commands, agents, hooks, rules, .mcp.json, .app.json, and any component path the plugin declares. A public release requires README.md at the package root, so declare it here. See docs/plugin-standard.md."
+          "description": "Extra files or directories copied into the generated plugin. This schema checks the shape of each entry only. The registry decides which destinations it accepts when it compiles the plugin, and reports any it rejects."
         },
         "strict": {
           "type": "boolean",
@@ -222,7 +223,7 @@
         },
         "destination": {
           "$ref": "#/$defs/relativePath",
-          "description": "Path in the generated plugin, relative to the package root. Defaults to source. It cannot be the package root, and a destination ending in .md must have a source file ending in .md."
+          "description": "Path in the generated plugin, relative to the package root. Defaults to source."
         }
       }
     },
