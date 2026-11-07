@@ -40,4 +40,6 @@ Maintainers publish `CognitiveForge.AgentSkills.Catalog` to nuget.org with trust
 1. In a pull request, bump `<Version>` in `tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj` and add the changes to [`CHANGELOG.md`](tools/AgentSkills.Catalog/CHANGELOG.md).
 2. After it merges, run the **Publish Catalog Package** workflow on `main`. It creates the `catalog-v<version>` tag, then publishes the package. Pushing that tag yourself starts the same flow.
 
-The run fails if the commit is not on `main`, or if the version was not bumped or is already published. Its job summary reports each step and what to do next. If it fails after creating the tag, use **Re-run failed jobs** so it stays on the same commit.
+The run stops before tagging or publishing if the commit is not on `main`, or if the version's tag is already on another commit. In the second case, bump `<Version>`. The job summary reports each step and what to do next.
+
+If the push to nuget.org fails, the tag already exists. A 409 conflict means the version is already published, so a re-run cannot succeed: bump `<Version>` instead. For any other failure, use **Re-run failed jobs** so the run stays on the same commit.

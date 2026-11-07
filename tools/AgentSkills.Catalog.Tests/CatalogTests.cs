@@ -194,15 +194,19 @@ public sealed class CatalogValidatorTests
         Assert.DoesNotContain(errors, error => error.Contains("notes.md:2"));
     }
 
-    [Fact]
-    public void Required_package_files_are_enforced()
+    [Theory]
+    [InlineData("LICENSE")]
+    [InlineData("NOTICE")]
+    [InlineData("README.md")]
+    [InlineData("SECURITY.md")]
+    public void Required_package_files_are_enforced(string fileName)
     {
         using var fixture = new MarketplaceFixture();
         fixture.AddPackage("sample");
         fixture.Save();
-        File.Delete(Path.Combine(fixture.Package("sample"), "NOTICE"));
+        File.Delete(Path.Combine(fixture.Package("sample"), fileName));
         var errors = CatalogValidator.Validate(fixture.Root, MarketplaceFixture.PublicPolicy);
-        Assert.Contains(errors, error => error.Contains("must include NOTICE at its root"));
+        Assert.Contains(errors, error => error.Contains($"must include {fileName} at its root"));
     }
 
     [Theory]
