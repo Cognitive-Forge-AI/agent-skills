@@ -1,6 +1,6 @@
 {
   "name": "blueprints",
-  "version": "0.2.0-preview.1",
+  "version": "0.2.0-preview.3",
   "description": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
   "skills": "./skills/",
   "author": {
@@ -26,6 +26,14 @@
     "shortDescription": "Skills for adopting, following, authoring, and maintaining Blueprints project memory.",
     "developerName": "Cognitive Forge",
     "category": "productivity",
-    "websiteURL": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/blueprints"
+    "websiteURL": "https://github.com/Cognitive-Forge-AI/agent-skills/tree/main/plugins/blueprints",
+    "longDescription": "Keep repository work aligned with Blueprints project memory, including specifications, decisions, migrations, and upgrades. Preserve traceability as projects evolve.",
+    "capabilities": [
+      "Set up Blueprints in a repository",
+      "Maintain project specifications and decisions",
+      "Keep project memory consistent",
+      "Migrate documentation to Blueprints",
+      "Upgrade existing Blueprints stores"
+    ]
   }
 }

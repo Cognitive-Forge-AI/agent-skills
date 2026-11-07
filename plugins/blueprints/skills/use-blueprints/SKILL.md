@@ -1,5 +1,5 @@
 ---
-name: blueprints
+name: use-blueprints
 description: >
     Use when working in a repository that contains .blueprints/, when repository instructions require Blueprints, or when an authorized repository task changes intent, behavior, architecture, dependencies, security, operations, documentation meaning, or agent workflows.
 disable-model-invocation: false
@@ -19,7 +19,7 @@ Maintain small, linked project memory. Specs own current desired intent; Decisio
 
 A missing configuration in an existing store is not permission to upgrade. Preserve its records, use available historical definitions for relevant reading, report interpretation gaps, and leave an upgrade for an explicit request. Do not silently stamp the installed version onto existing items.
 
-For an authorized task requiring memory in a repository without a store, initialize `config.json` with the bundled suite version and `project-memory` active. Create a meaningful draft root Spec. Group additional items by feature only as needed.
+For an authorized task requiring memory in a repository without a store, initialize `config.json` with the bundled suite version and `project-memory` active. Create a meaningful draft root Spec. Group additional items by feature only as needed. For an explicit setup request, use `initialize-blueprints`.
 
 ## Choose the procedure per item
 
