@@ -6,6 +6,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "schemaVersion",
     "name",
     "plugins"
   ],
@@ -13,6 +14,11 @@
     "$schema": {
       "type": "string",
       "description": "Optional schema reference for editor validation."
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 2,
+      "description": "Version of this manifest format. Must be 2."
     },
     "name": {
       "type": "string",
@@ -157,19 +163,12 @@
           "description": "Codex app/connector mapping path copied into the generated plugin."
         },
         "assets": {
-          "$ref": "#/$defs/pathOrPathArray",
-          "description": "Asset file or directory paths copied into the generated plugin. LICENSE and NOTICE are added by the registry and need not be declared."
-        },
-        "readme": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/relativePath"
-            },
-            {
-              "pattern": "\\.md$"
-            }
-          ],
-          "description": "Optional Markdown file, relative to the capability root, that the registry compiler publishes as README.md at the package root. Written for people installing the plugin, not for authors. Required for public release; see docs/plugin-standard.md for its link rules."
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/asset"
+          },
+          "description": "Extra files or directories copied into the generated plugin. A destination must not overlap another destination or a reserved path. Two paths overlap when they are the same path or one is beneath the other, compared case-insensitively. Reserved paths: LICENSE, NOTICE, SECURITY.md, manifest.json, .claude-plugin, .codex-plugin, .cursor-plugin, skills, commands, agents, hooks, rules, .mcp.json, .app.json, and any component path the plugin declares. A public release requires README.md at the package root, so declare it here. See docs/plugin-standard.md."
         },
         "strict": {
           "type": "boolean",
@@ -209,6 +208,23 @@
           ]
         }
       ]
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relativePath",
+          "description": "File or directory to copy, relative to the capability root."
+        },
+        "destination": {
+          "$ref": "#/$defs/relativePath",
+          "description": "Path in the generated plugin, relative to the package root. Defaults to source. It cannot be the package root, and a destination ending in .md must have a source file ending in .md."
+        }
+      }
     },
     "person": {
       "type": "object",

@@ -30,7 +30,6 @@ internal sealed class MarketplaceFixture : IDisposable
         RequiredLicense = "Apache-2.0",
         RequiredAuthorName = "Cognitive Forge",
         RequiredPackageFiles = ["NOTICE"],
-        RequireSkillLicense = true,
         UrlScanExcludedPaths = ["manifest.json"],
         ForbiddenUrlPrefixes = ["https://github.com/Cognitive-Forge-AI/"],
         AllowedUrlPrefixes = ["https://github.com/Cognitive-Forge-AI/agent-skills"]

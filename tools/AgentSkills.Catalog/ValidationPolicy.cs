@@ -18,12 +18,6 @@ public sealed record ValidationPolicy
     /// <summary>Files every package must contain at its root, such as <c>NOTICE</c>.</summary>
     public IReadOnlyList<string> RequiredPackageFiles { get; init; } = [];
 
-    /// <summary>
-    /// Every <c>SKILL.md</c> must declare a <c>license</c> in its frontmatter (matching <see cref="RequiredLicense"/> when set),
-    /// so the license travels with skills that are copied individually.
-    /// </summary>
-    public bool RequireSkillLicense { get; init; }
-
     public bool RequireCursorManifest { get; init; } = true;
 
     /// <summary>Every directory under <c>plugins/</c> must be a catalog package.</summary>
