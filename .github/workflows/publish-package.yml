@@ -1,8 +1,12 @@
 name: Publish Catalog Package
 
+# Run manually on main, or push a catalog-v<version> tag. Both take the same steps:
+# the tag step sees the pushed tag and has nothing to create.
+
 on:
   push:
     tags: ['catalog-v*']
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,8 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: nuget
     permissions:
-      contents: read
-      id-token: write
+      contents: write # create the tag through the git refs API
+      id-token: write # log in to nuget.org with trusted publishing (OIDC)
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -25,25 +32,114 @@ jobs:
       - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: '10.0.x'
-      - name: Check tag matches package version
+      - name: Check the release
+        id: release
         env:
-          TAG: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          version=$(dotnet msbuild tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj -getProperty:Version)
-          if [ "catalog-v${version}" != "$TAG" ]; then
-            echo "Tag $TAG does not match package version $version." >&2
+          fail() {
+            echo "reason=$1" >> "$GITHUB_OUTPUT"
+            echo "::error::$1"
             exit 1
+          }
+
+          version=$(dotnet msbuild tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj -getProperty:Version)
+          tag="catalog-v${version}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+          status=$(gh api "repos/${GITHUB_REPOSITORY}/compare/main...${GITHUB_SHA}" --jq .status)
+          if [[ $status != identical && $status != behind ]]; then
+            fail "Commit ${GITHUB_SHA} is not on main."
           fi
+
+          if [[ $GITHUB_REF_TYPE == tag && $GITHUB_REF_NAME != "$tag" ]]; then
+            fail "Tag ${GITHUB_REF_NAME} does not match package version ${version}."
+          fi
+
+          # An annotated tag lists its commit last, as the peeled ^{} ref.
+          tagged=$(git ls-remote origin "refs/tags/${tag}" "refs/tags/${tag}^{}" | tail -n 1 | cut -f 1)
+          if [[ -n $tagged && $tagged != "$GITHUB_SHA" ]]; then
+            fail "Tag ${tag} is already on commit ${tagged}. Bump \`<Version>\` to release this commit."
+          fi
+          echo "tagged=${tagged}" >> "$GITHUB_OUTPUT"
       - name: Test
+        id: test
         run: dotnet test tools/AgentSkills.Catalog.Tests/AgentSkills.Catalog.Tests.csproj
       - name: Pack
+        id: pack
         run: dotnet pack tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj --configuration Release --output "$RUNNER_TEMP/packages"
       - name: Log in to nuget.org with trusted publishing
         id: nuget
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: ${{ secrets.NUGET_USER }}
+      # The tag and the package can't be pushed atomically. The tag goes first because it can be
+      # deleted and a published package version can't, and a re-run then publishes the package.
+      - name: Create the tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag }}
+          TAGGED: ${{ steps.release.outputs.tagged }}
+        run: |
+          if [[ -n $TAGGED ]]; then
+            echo "result=already existed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/git/refs" -f "ref=refs/tags/${TAG}" -f "sha=${GITHUB_SHA}" > /dev/null
+          echo "result=created" >> "$GITHUB_OUTPUT"
+      # No --skip-duplicate: a version that is already published must fail the run, not pass silently.
       - name: Push
+        id: push
         env:
           NUGET_API_KEY: ${{ steps.nuget.outputs.NUGET_API_KEY }}
-        run: dotnet nuget push "$RUNNER_TEMP/packages/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push "$RUNNER_TEMP/packages/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+      - name: Report the result
+        if: always()
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          REASON: ${{ steps.release.outputs.reason }}
+          TAG_RESULT: ${{ steps.tag.outputs.result }}
+          CHECK_OUTCOME: ${{ steps.release.outcome }}
+          TEST_OUTCOME: ${{ steps.test.outcome }}
+          PACK_OUTCOME: ${{ steps.pack.outcome }}
+          LOGIN_OUTCOME: ${{ steps.nuget.outcome }}
+          TAG_OUTCOME: ${{ steps.tag.outcome }}
+          PUSH_OUTCOME: ${{ steps.push.outcome }}
+        run: |
+          describe() {
+            case "$1" in
+              success) echo "$2" ;;
+              failure) echo "failed" ;;
+              *) echo "not reached" ;;
+            esac
+          }
+
+          if [[ $PUSH_OUTCOME == success ]]; then
+            next="Version ${VERSION} is published."
+          elif [[ $PUSH_OUTCOME == failure ]]; then
+            next="The tag exists, but this run did not publish the package. If the log shows a 409 conflict, ${VERSION} is already on nuget.org, so bump \`<Version>\`. Otherwise use **Re-run failed jobs**."
+          elif [[ $TAG_OUTCOME == failure ]]; then
+            next="Nothing was published. Check the log, then run the workflow again."
+          elif [[ -n $REASON ]]; then
+            next="Nothing was published. ${REASON}"
+          else
+            next="Nothing was tagged or published. Fix the failure, then run the workflow again."
+          fi
+
+          {
+            echo "## Catalog package ${VERSION:-(version unknown)}"
+            echo
+            echo "| Step | Result |"
+            echo "| --- | --- |"
+            echo "| Commit | \`${GITHUB_SHA}\` |"
+            echo "| Checks | $(describe "$CHECK_OUTCOME" passed) |"
+            echo "| Tests | $(describe "$TEST_OUTCOME" passed) |"
+            echo "| Pack | $(describe "$PACK_OUTCOME" passed) |"
+            echo "| nuget.org login | $(describe "$LOGIN_OUTCOME" passed) |"
+            echo "| Tag | $(describe "$TAG_OUTCOME" "$TAG_RESULT") |"
+            echo "| Package | $(describe "$PUSH_OUTCOME" published) |"
+            echo
+            echo "$next"
+          } >> "$GITHUB_STEP_SUMMARY"

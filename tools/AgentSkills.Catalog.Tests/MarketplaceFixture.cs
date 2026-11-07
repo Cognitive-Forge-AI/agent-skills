@@ -29,8 +29,7 @@ internal sealed class MarketplaceFixture : IDisposable
     {
         RequiredLicense = "Apache-2.0",
         RequiredAuthorName = "Cognitive Forge",
-        RequiredPackageFiles = ["NOTICE"],
-        RequireSkillLicense = true,
+        RequiredPackageFiles = ["LICENSE", "NOTICE", "README.md", "SECURITY.md"],
         UrlScanExcludedPaths = ["manifest.json"],
         ForbiddenUrlPrefixes = ["https://github.com/Cognitive-Forge-AI/"],
         AllowedUrlPrefixes = ["https://github.com/Cognitive-Forge-AI/agent-skills"]
@@ -56,6 +55,8 @@ internal sealed class MarketplaceFixture : IDisposable
         Write(Path.Combine(package, "skills", "sample", "SKILL.md"), "---\nname: sample\ndescription: Sample\nlicense: Apache-2.0\n---\nSample.");
         Write(Path.Combine(package, "LICENSE"), "Apache License 2.0");
         Write(Path.Combine(package, "NOTICE"), "Sample\nCopyright 2026 Cognitive Forge Inc.");
+        Write(Path.Combine(package, "README.md"), "# Sample");
+        Write(Path.Combine(package, "SECURITY.md"), "# Security policy");
         CatalogJson.Write(Path.Combine(package, PackageManifests.ClaudePath), common);
         var codex = (JsonObject)common.DeepClone();
         codex["interface"] = new JsonObject { ["displayName"] = name, ["developerName"] = "Cognitive Forge" };

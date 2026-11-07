@@ -15,7 +15,9 @@ plugins/<plugin-name>/
 ├── .cursor-plugin/plugin.json   # Cursor
 ├── LICENSE                      # Apache-2.0 text
 ├── NOTICE                       # Copyright and attribution
+├── SECURITY.md                  # Security policy
 ├── README.md                    # For people installing the plugin
+├── CHANGELOG.md                 # Optional release notes
 ├── skills/<skill-name>/SKILL.md # Optional components below
 ├── agents/
 ├── commands/
@@ -42,13 +44,13 @@ license: Apache-2.0
 
 - `name` MUST match the directory name and be kebab-case.
 - `description` MUST say what the skill does and when an agent should use it.
-- `license` MUST be present. A skill copied on its own (OpenCode, the Vercel `skills` CLI, manual copies) keeps its license this way.
+- `license` SHOULD be present. A skill copied on its own (OpenCode, the Vercel `skills` CLI, manual copies) keeps its license this way.
 - Supporting files (`references/`, `scripts/`, `assets/`) live inside the skill directory and are referenced relatively.
 
 ## 3. Licensing and notices
 
 - Plugins are licensed under Apache-2.0. Every catalog entry and plugin manifest MUST declare `"license": "Apache-2.0"`.
-- Every plugin MUST contain `LICENSE` and `NOTICE` at its root. `NOTICE` names the plugin and states `Copyright <year> Cognitive Forge Inc.`; Apache-2.0 §4(d) requires redistributors to keep it.
+- Every plugin MUST contain `LICENSE`, `NOTICE`, `README.md`, and `SECURITY.md` at its root. `NOTICE` names the plugin and states `Copyright <year> Cognitive Forge Inc.`; Apache-2.0 §4(d) requires redistributors to keep it.
 - Third-party material MUST keep its own license and attribution, and be identified in `NOTICE`.
 
 ## 4. Metadata
@@ -70,6 +72,7 @@ A Cognitive Forge spoke publishes exactly one plugin through the private registr
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/Cognitive-Forge-AI/agent-skills/main/schemas/spoke-manifest.schema.json",
+  "schemaVersion": 2,
   "name": "<plugin-name>",
   "plugins": [
     {
@@ -79,30 +82,47 @@ A Cognitive Forge spoke publishes exactly one plugin through the private registr
       "version": "0.1.0-preview.1",
       "category": "productivity",
       "skillsPath": "skills",
-      "readme": "plugin-readme.md"
+      "assets": [
+        { "source": "plugin-readme.md", "destination": "README.md" },
+        { "source": "CHANGELOG.md" }
+      ]
     }
   ]
 }
 ```
 
-- The registry generates the three plugin manifests, applies Cognitive Forge authorship and the Apache-2.0 license, and adds `LICENSE` and `NOTICE` to the package. Spokes do not declare `author`, `owner`, or `license`.
+- `schemaVersion` is required and MUST be `2`.
+- The registry generates the three plugin manifests and applies Cognitive Forge authorship and the Apache-2.0 license. Spokes do not declare `author`, `owner`, or `license`.
 - Component paths are relative to the capability root and copied with their relative paths.
 - The spoke repository root also carries `LICENSE` and `NOTICE` for the repository itself.
 - Shared workflows from the registry notify it of changes and validate pull requests against this standard.
 
-### 6.1 Plugin README
+### 6.1 Package assets
 
-The plugin's `readme` property names a Markdown file, relative to the capability root and ending in `.md`. The registry compiler publishes it as `README.md` at the package root.
+`assets` declares extra files for the package. `source` names a file or directory relative to the capability root. `destination` is a path relative to the package root, and defaults to `source`. The schema checks the shape of each entry. The registry decides which destinations it accepts when it compiles a plugin, and reports any it rejects. The resulting package must still meet this standard.
 
-- The README is written for people installing and using the plugin: what it does, which harnesses it supports, how to install it, and how to use its components. Guidance for authors and maintainers belongs in the spoke repository, not here. A capability root's own `README.md` usually describes the source, so the plugin README is often a separate file, such as `plugin-readme.md`.
-- `readme` is optional in the schema, but a plugin MUST declare it before it is released publicly.
-- The README MUST NOT reference a non-public Cognitive Forge repository, in any form and whether or not the reference is a link. Where `<repo>` is a non-public repository, this covers:
-  - `https://github.com/Cognitive-Forge-AI/<repo>` URLs
-  - `https://raw.githubusercontent.com/Cognitive-Forge-AI/<repo>/...` URLs
-  - SSH remotes such as `git@github.com:Cognitive-Forge-AI/<repo>.git`
-  - `Cognitive-Forge-AI/<repo>` shorthand
-  - GitHub Pages URLs such as `https://cognitive-forge-ai.github.io/<repo>`
+### 6.2 Plugin README
 
-  Links to public Cognitive Forge repositories, such as this marketplace, and to third-party sites are allowed.
-- Relative links MUST resolve to a file inside the published package. They are resolved from `README.md` at the package root, not from the source file's location in the spoke.
-- Every other link MUST use the `http`, `https`, or `mailto` scheme.
+The plugin README is an `assets` entry with the destination `README.md`. Its source file can have another name:
+
+```json
+{ "source": "plugin-readme.md", "destination": "README.md" }
+```
+
+The README is written for people installing and using the plugin: what it does, which harnesses it supports, how to install it, and how to use its components. Guidance for authors and maintainers belongs in the spoke repository, not here. A capability root's own `README.md` usually describes the source, so the plugin README is often a separate file, such as `plugin-readme.md`.
+
+### 6.3 Changelog
+
+A plugin MAY publish `CHANGELOG.md` at the package root by declaring it in `assets`.
+
+- Entries are written for people using the plugin.
+- Entries MUST NOT contain commit SHAs or private references.
+- An entry MUST ship in the same change as its version bump.
+
+### 6.4 Markdown links
+
+These rules apply to every Markdown file in the package. `agent-skills validate` only checks the URL prefixes in [`catalog-policy.json`](../catalog-policy.json).
+
+- A file MUST NOT reference a non-public Cognitive Forge repository, in any form and whether or not the reference is a link. That file lists the forbidden URL prefixes and the allowed exceptions. The rule also covers forms it does not list: raw file URLs, GitHub Pages URLs, SSH remotes, and `Cognitive-Forge-AI/<repo>` shorthand.
+- Relative links MUST resolve to a file inside the published package. They are resolved from the linking file's folder in the package, not from the source file's location in the spoke. A link MAY use `../` if it still ends inside the package.
+- Every other link MUST use the `https` or `mailto` scheme.

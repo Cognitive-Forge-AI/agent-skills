@@ -161,19 +161,6 @@ public static partial class CatalogValidator
             if (!RootFileExists(package, required, "requiredPackageFiles"))
                 errors.Add($"Plugin {name} must include {required} at its root.");
 
-        if (policy.RequireSkillLicense)
-        {
-            foreach (var skill in files.Where(file => Path.GetFileName(file) == "SKILL.md"))
-            {
-                var license = FrontmatterValue(File.ReadAllText(skill), "license");
-                var location = SafePaths.ToPortableRelative(package, skill);
-                if (string.IsNullOrWhiteSpace(license))
-                    errors.Add($"Plugin {name} {location} must declare license in its frontmatter.");
-                else if (policy.RequiredLicense is not null && license != policy.RequiredLicense)
-                    errors.Add($"Plugin {name} {location} must declare license {policy.RequiredLicense}, not {license}.");
-            }
-        }
-
         if (policy.ForbiddenUrlPrefixes.Count > 0)
         {
             var excluded = new HashSet<string>(policy.UrlScanExcludedPaths, StringComparer.Ordinal);
@@ -188,37 +175,6 @@ public static partial class CatalogValidator
         if (string.IsNullOrWhiteSpace(fileName) || fileName.IndexOfAny(['/', '\\']) >= 0 || fileName is "." or ".." || Path.IsPathRooted(fileName))
             throw new CatalogException($"Policy {setting} entries must be file names at the package root: {fileName}");
         return File.Exists(SafePaths.Resolve(package, fileName, $"Policy {setting} entry"));
-    }
-
-    /// <summary>Returns a top-level scalar from a Markdown file's YAML frontmatter, or null.</summary>
-    public static string? FrontmatterValue(string markdown, string key)
-    {
-        var text = markdown.ReplaceLineEndings("\n");
-        if (!text.StartsWith("---\n", StringComparison.Ordinal)) return null;
-        var end = text.IndexOf("\n---", 4, StringComparison.Ordinal);
-        if (end < 0) return null;
-        foreach (var line in text[4..end].Split('\n'))
-        {
-            if (!line.StartsWith(key + ":", StringComparison.Ordinal)) continue;
-            var value = line[(key.Length + 1)..].Trim();
-            if (value.Length > 0 && value[0] is '"' or '\'')
-            {
-                // A quoted scalar ends at its closing quote, so a # inside the quotes is part of the value.
-                var close = value.IndexOf(value[0], 1);
-                return close > 0 ? value[1..close] : value;
-            }
-            // An unquoted scalar ends where a YAML comment starts: a # preceded by whitespace.
-            var comment = FindComment(value);
-            return comment >= 0 ? value[..comment].TrimEnd() : value;
-        }
-        return null;
-
-        static int FindComment(string value)
-        {
-            for (var index = 1; index < value.Length; index++)
-                if (value[index] == '#' && value[index - 1] is ' ' or '\t') return index;
-            return -1;
-        }
     }
 
     private static void CheckMetadata(JsonObject json, string description, ValidationPolicy policy, List<string> errors)

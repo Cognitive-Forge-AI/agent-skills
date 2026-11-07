@@ -21,9 +21,11 @@ dotnet run --project tools/AgentSkills.Cli -- validate
 git diff --check
 ```
 
+If you edit a workflow, you can also run [`actionlint`](https://github.com/rhysd/actionlint) from the repository root. CI runs it on every pull request.
+
 After editing `marketplace.json`, regenerate the harness views with `dotnet run --project tools/AgentSkills.Cli -- views` and commit them together with the catalog.
 
-Validation rejects links in package paths and unsafe or missing component paths. It also rejects manifests that disagree with the catalog, out-of-date views, and packages without an Apache-2.0 license file. Links to non-public Cognitive Forge repositories are rejected too. Use physical paths: links in any path component are rejected, including linked parent directories.
+Validation rejects links in package paths and unsafe or missing component paths. It also rejects manifests that disagree with the catalog, out-of-date views, and packages without an Apache-2.0 license file, `README.md`, or `SECURITY.md`. Links to non-public Cognitive Forge repositories are rejected too. Use physical paths: links in any path component are rejected, including linked parent directories.
 
 ## Pull requests
 
@@ -33,4 +35,11 @@ By contributing, you confirm that you can distribute your contribution under Apa
 
 ## Releasing the catalog library
 
-Maintainers publish `CognitiveForge.AgentSkills.Catalog` to nuget.org by pushing a `catalog-v<version>` tag that matches `<Version>` in `tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj`. The workflow uses nuget.org trusted publishing.
+Maintainers publish `CognitiveForge.AgentSkills.Catalog` to nuget.org with trusted publishing:
+
+1. In a pull request, bump `<Version>` in `tools/AgentSkills.Catalog/AgentSkills.Catalog.csproj` and add the changes to [`CHANGELOG.md`](tools/AgentSkills.Catalog/CHANGELOG.md).
+2. After it merges, run the **Publish Catalog Package** workflow on `main`. It creates the `catalog-v<version>` tag, then publishes the package. Pushing that tag yourself starts the same flow.
+
+The run stops before tagging or publishing if the commit is not on `main`, or if the version's tag is already on another commit. In the second case, bump `<Version>`. The job summary reports each step and what to do next.
+
+If the push to nuget.org fails, the tag already exists. A 409 conflict means the version is already published, so a re-run cannot succeed: bump `<Version>` instead. For any other failure, use **Re-run failed jobs** so the run stays on the same commit.

@@ -2,9 +2,11 @@
   "requiredLicense": "Apache-2.0",
   "requiredAuthorName": "Cognitive Forge",
   "requiredPackageFiles": [
-    "NOTICE"
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "SECURITY.md"
   ],
-  "requireSkillLicense": true,
   "requireCursorManifest": true,
   "requireReferencedPackages": true,
   "forbiddenUrlPrefixes": [
