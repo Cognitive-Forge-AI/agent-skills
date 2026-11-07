@@ -121,7 +121,7 @@ A plugin MAY publish `CHANGELOG.md` at the package root by declaring it in `asse
 
 ### 6.4 Markdown links
 
-These rules apply to every Markdown file in the package. The registry enforces them at release. `agent-skills validate` only checks the URL prefixes in [`catalog-policy.json`](../catalog-policy.json).
+These rules apply to every Markdown file in the package. `agent-skills validate` only checks the URL prefixes in [`catalog-policy.json`](../catalog-policy.json).
 
 - A file MUST NOT reference a non-public Cognitive Forge repository, in any form and whether or not the reference is a link. That file lists the forbidden URL prefixes and the allowed exceptions. The rule also covers forms it does not list: raw file URLs, GitHub Pages URLs, SSH remotes, and `Cognitive-Forge-AI/<repo>` shorthand.
 - Relative links MUST resolve to a file inside the published package. They are resolved from the linking file's folder in the package, not from the source file's location in the spoke. A link MAY use `../` if it still ends inside the package.
