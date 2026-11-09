@@ -4,9 +4,11 @@ const string Usage = """
     Usage:
       agent-skills validate [--root <marketplace-root>]
       agent-skills views [--root <marketplace-root>]
+      agent-skills readme [--root <marketplace-root>]
 
     validate  Check the root catalog, packages, manifests, components, generated views, and catalog-policy.json.
     views     Regenerate the Claude Code, Codex, and Cursor catalog views from marketplace.json.
+    readme    Regenerate the plugin table in README.md from marketplace.json.
     """;
 
 if (args.Length == 0 || args[0] is "-h" or "--help")
@@ -41,6 +43,10 @@ try
         case "views":
             CatalogViews.WriteAll(root, CatalogJson.ReadObject(Path.Combine(root, CatalogViews.RootPath)));
             Console.WriteLine($"Regenerated {string.Join(", ", CatalogViews.ViewPaths)}.");
+            return 0;
+        case "readme":
+            CatalogReadme.Write(root, CatalogJson.ReadObject(Path.Combine(root, CatalogViews.RootPath)));
+            Console.WriteLine($"Regenerated the plugin table in {CatalogReadme.ReadmePath}.");
             return 0;
         default:
             Console.Error.WriteLine($"Unknown command: {args[0]}");

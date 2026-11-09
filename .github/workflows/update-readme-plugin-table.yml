@@ -1,0 +1,68 @@
+name: Update README Plugin Table
+
+on:
+  push:
+    branches: [main]
+    paths: ['marketplace.json']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-readme-plugin-table
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Create the App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.README_APP_CLIENT_ID }}
+          private-key: ${{ secrets.README_APP_PRIVATE_KEY }}
+          permission-contents: write
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: '10.0.x'
+      - name: Update the README plugin table
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          remote="https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          for attempt in {1..5}; do
+            git fetch "$remote" main
+            git reset --hard FETCH_HEAD
+
+            # Building and running the generator needs no credentials, so it doesn't get the token.
+            env -u APP_TOKEN dotnet run --project tools/AgentSkills.Cli/AgentSkills.Cli.csproj -- readme
+
+            if git diff --quiet -- README.md; then
+              echo "The README plugin table is up to date."
+              exit 0
+            fi
+
+            git commit --message 'chore: update README plugin table' -- README.md
+            if git push "$remote" HEAD:refs/heads/main; then
+              exit 0
+            fi
+
+            echo "Push attempt ${attempt} failed."
+            sleep "$((attempt * 2))"
+          done
+
+          echo "::error::Could not push the README plugin table after 5 attempts."
+          exit 1

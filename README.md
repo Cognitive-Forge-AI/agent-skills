@@ -4,6 +4,17 @@ An open marketplace for agent plugins and skills, published by Cognitive Forge.
 
 Each plugin lives in `plugins/<name>/`. [`marketplace.json`](marketplace.json) is the authoritative catalog; it lists each plugin with its version and description. Your harness's plugin browser shows the same catalog after you add the marketplace. You install plugins with your harness's native commands. This marketplace has no installer of its own.
 
+## Plugins
+
+<!-- plugin-table:start - generated from marketplace.json; do not edit -->
+
+| Plugin | What it provides | Current version |
+| --- | --- | --- |
+| [Agent Loop](plugins/agent-loop) | Reusable workflow skills for coding agents and chat assistants. | 0.2.0 |
+| [Blueprints](plugins/blueprints) | Skills for adopting, following, authoring, and maintaining Blueprints project memory. | 0.2.0-preview.3 |
+
+<!-- plugin-table:end -->
+
 ## Install
 
 Every route below registers the marketplace as `agent-skills` and installs plugins as `<plugin>@agent-skills`. Start a new session, or reload plugins, after installing or updating.
@@ -101,6 +112,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md). Plugin packages are published through r
 ```sh
 dotnet run --project tools/AgentSkills.Cli -- validate
 dotnet run --project tools/AgentSkills.Cli -- views     # regenerate harness catalog views
+dotnet run --project tools/AgentSkills.Cli -- readme    # regenerate the README plugin table
 dotnet test tools/AgentSkills.Catalog.Tests
 ```
 
