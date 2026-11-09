@@ -3,7 +3,7 @@ name: Update README Plugin Table
 on:
   push:
     branches: [main]
-    paths: ['marketplace.json']
+    paths: ['marketplace.json', 'plugins/*/.codex-plugin/plugin.json']
   workflow_dispatch:
 
 permissions:
