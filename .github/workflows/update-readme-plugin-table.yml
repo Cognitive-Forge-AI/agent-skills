@@ -26,6 +26,8 @@ jobs:
         with:
           client-id: ${{ secrets.README_APP_CLIENT_ID }}
           private-key: ${{ secrets.README_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
           permission-contents: write
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -39,12 +41,16 @@ jobs:
         env:
           APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name "Cognitive Forge CI"
+          git config user.email "opensource@cognitiveforge.ai"
           remote="https://x-access-token:${APP_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
           for attempt in {1..5}; do
-            git fetch "$remote" main
+            if ! git fetch "$remote" main; then
+              echo "Fetch attempt ${attempt} failed."
+              sleep "$((attempt * 2))"
+              continue
+            fi
             git reset --hard FETCH_HEAD
 
             # Building and running the generator needs no credentials, so it doesn't get the token.
@@ -64,5 +70,5 @@ jobs:
             sleep "$((attempt * 2))"
           done
 
-          echo "::error::Could not push the README plugin table after 5 attempts."
+          echo "::error::Could not fetch main or push the README plugin table after 5 attempts."
           exit 1
