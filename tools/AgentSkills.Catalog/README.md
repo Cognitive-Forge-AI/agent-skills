@@ -3,6 +3,7 @@
 Shared rules for Agent Skills plugin marketplaces:
 
 - `CatalogViews` generates the Claude Code, Codex, and Cursor marketplace views from the authoritative root `marketplace.json`. GitHub Copilot reads the root catalog directly.
+- `CatalogReadme` generates the plugin table between the plugin-table markers in a marketplace's root `README.md`.
 - `PackageManifests` derives Cursor package manifests from the common plugin manifest.
 - `SafePaths` validates relative manifest paths and rejects links in every path component.
 - `PackageDigest` computes deterministic package-tree digests.

@@ -2,6 +2,12 @@
 
 Changes to the `CognitiveForge.AgentSkills.Catalog` package. Versions follow SemVer. While the major version is 0, a minor version can include breaking changes.
 
+## 0.4.0
+
+### Added
+
+- `CatalogReadme`: generates the plugin table between the plugin-table markers in a marketplace's root `README.md`.
+
 ## 0.3.0
 
 ### Removed
